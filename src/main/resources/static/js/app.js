@@ -6,31 +6,66 @@ function fetchTodos() {
         .then(response => response.json())
         .then(data => {
             const todoList = document.querySelector("#todoList");
-            todoList.innerHTML = ''; // clear the list
+            todoList.innerHTML = ''; // Clear the list
 
-            // sort todos by dueDate and priority
+            // Sort todos by dueDate and priority
             data.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate) || b.priority.localeCompare(a.priority));
 
             data.forEach(todo => {
-                // create the list item for each todo
-                console.log(todo.completed);
-                const todoItem = `
-                    <li class="list-group-item">
-                        <input type="checkbox" class="form-check-input"
-                               ${todo.completed ? 'checked' : ''}
-                               data-id="${todo.id}" onclick="toggleComplete(${todo.id}, this)">
-                        <span class="todo-title ${todo.isCompleted ? 'completed' : ''}">${todo.title}</span>
-                        <button class="btn btn-success btn-sm" onclick="editTodo(${todo.id})">Edit</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTodo(${todo.id})">Delete</button>
-                    </li>
-                `;
-                todoList.innerHTML += todoItem; // add to the list
+                const priorityColors = {
+                    High: 'text-danger',
+                    Medium: 'text-warning',
+                    Low: 'text-success'
+                };
+
+                // create list item
+                const todoItem = document.createElement('li');
+                todoItem.className = 'list-group-item';
+
+                //checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-check-input';
+                checkbox.checked = todo.completed;
+                checkbox.setAttribute('data-id', todo.id);
+                checkbox.onclick = () => toggleComplete(todo.id, checkbox);
+
+                //title
+                const title = document.createElement('span');
+                title.className = `todo-title ${todo.completed ? 'completed' : ''}`;
+                title.textContent = todo.title;
+
+                //priority Badge
+                const priorityBadge = document.createElement('span');
+                priorityBadge.className = `badge ${priorityColors[todo.priority]} ms-2`;
+                priorityBadge.textContent = todo.priority;
+
+                //buttons
+                const editButton = document.createElement('button');
+                editButton.className = 'btn btn-success btn-sm';
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => editTodo(todo.id);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn btn-danger btn-sm';
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteTodo(todo.id);
+
+                //add elements to list
+                todoItem.appendChild(checkbox);
+                todoItem.appendChild(title);
+                todoItem.appendChild(priorityBadge);
+                todoItem.appendChild(editButton);
+                todoItem.appendChild(deleteButton);
+
+                todoList.appendChild(todoItem);
             });
         })
         .catch(error => console.error("Error fetching ToDos:", error));
 }
 
-// Toggle completion status for a todo
+
+//update completion for a todo
 function toggleComplete(id, checkbox) {
     const completed = checkbox.checked;
     fetch(`${apiUrl}/${id}/complete`, {
@@ -108,7 +143,7 @@ document.getElementById("saveEditBtn").addEventListener("click", function () {
     });
 });
 
-// Initialize the app when the document is loaded
+
 document.addEventListener('DOMContentLoaded', (event) => {
     fetchTodos(); // fetch todos
 });

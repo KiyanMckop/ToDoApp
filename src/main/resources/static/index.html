@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+<div class="container my-5">
+    <header class="text-center mb-4">
+        <h1 class="app-title">To_oD</h1>
+    </header>
 
-<div style="text-align: center; padding:1rem;"><h1>To_oD</h1></div>
-
-<!-- nav tabs -->
-<div class="container mt-4">
-    <ul class="nav nav-tabs" id="todoTabs" role="tablist">
+    <!-- nav tabs -->
+    <ul class="nav nav-tabs justify-content-center" id="todoTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="create-tab" data-bs-toggle="tab" href="#create" role="tab" aria-controls="create" aria-selected="true">Create ToDo</a>
         </li>
@@ -24,31 +25,32 @@
             <a class="nav-link" id="edit-todo-tab" data-bs-toggle="tab" href="#edit-todo" role="tab" aria-controls="edit-todo" aria-selected="false">Edit ToDo</a>
         </li>
     </ul>
-    <div class="tab-content mt-3" id="todoTabsContent">
+
+    <div class="tab-content mt-4" id="todoTabsContent">
         <!-- create todo -->
         <div class="tab-pane fade show active" id="create" role="tabpanel" aria-labelledby="create-tab">
-            <form id="addTodoForm">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
+            <form id="addTodoForm" class="needs-validation" novalidate>
+                <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="title" placeholder="Enter title" required>
+                    <label for="title">Title</label>
                 </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
+                <div class="form-floating mb-3">
                     <textarea class="form-control" id="description" placeholder="Enter description" required></textarea>
+                    <label for="description">Description</label>
                 </div>
-                <div class="mb-3">
-                    <label for="dueDate" class="form-label">Due Date</label>
+                <div class="form-floating mb-3">
                     <input type="date" class="form-control" id="dueDate" required>
+                    <label for="dueDate">Due Date</label>
                 </div>
-                <div class="mb-3">
-                    <label for="priority" class="form-label">Priority</label>
+                <div class="form-floating mb-4">
                     <select class="form-select" id="priority" required>
                         <option value="High">High</option>
                         <option value="Medium">Medium</option>
                         <option value="Low">Low</option>
                     </select>
+                    <label for="priority">Priority</label>
                 </div>
-                <button type="submit" class="btn btn-primary">Add ToDo</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Add ToDo</button>
             </form>
         </div>
 
@@ -61,30 +63,30 @@
         <!-- edit todo tab -->
         <div class="tab-pane fade" id="edit-todo" role="tabpanel" aria-labelledby="edit-todo-tab">
             <h3>Edit ToDo</h3>
-            <div id="editForm" class="d-none">
+            <form id="editForm" class="d-none">
                 <input type="hidden" id="editTodoId">
-                <div class="mb-3">
-                    <label for="editTitle" class="form-label">Title</label>
+                <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="editTitle" required>
+                    <label for="editTitle">Title</label>
                 </div>
-                <div class="mb-3">
-                    <label for="editDescription" class="form-label">Description</label>
+                <div class="form-floating mb-3">
                     <textarea class="form-control" id="editDescription" required></textarea>
+                    <label for="editDescription">Description</label>
                 </div>
-                <div class="mb-3">
-                    <label for="editDueDate" class="form-label">Due Date</label>
+                <div class="form-floating mb-3">
                     <input type="date" class="form-control" id="editDueDate" required>
+                    <label for="editDueDate">Due Date</label>
                 </div>
-                <div class="mb-3">
-                    <label for="editPriority" class="form-label">Priority</label>
+                <div class="form-floating mb-4">
                     <select class="form-select" id="editPriority" required>
                         <option value="High">High</option>
                         <option value="Medium">Medium</option>
                         <option value="Low">Low</option>
                     </select>
+                    <label for="editPriority">Priority</label>
                 </div>
-                <button class="btn btn-success" id="saveEditBtn">Save Changes</button>
-            </div>
+                <button class="btn btn-success btn-lg w-100" id="saveEditBtn">Save Changes</button>
+            </form>
         </div>
     </div>
 </div>
