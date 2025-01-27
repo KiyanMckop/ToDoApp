@@ -55,6 +55,16 @@ public class ToDoController {
         return "ToDo item deleted";
     }
 
+    //update isCompleted
+    @PutMapping("/{id}/complete")
+    public ToDo updateIsComplete(@PathVariable Long id) {
+        ToDo todo = toDoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ToDo item not found"));
+        todo.setCompleted(!todo.isCompleted());  // Toggle completion status
+        return toDoRepository.save(todo);
+    }
+
+
 
 
 }

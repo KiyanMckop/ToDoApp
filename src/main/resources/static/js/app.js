@@ -1,35 +1,52 @@
 const apiUrl = "/api/todo";
 
-// get todos
+// Get todos
 function fetchTodos() {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const todoList = document.querySelector("#todoList");
-            todoList.innerHTML = '';
+            todoList.innerHTML = ''; // clear the list
 
-            // sort by dueDate and priority
+            // sort todos by dueDate and priority
             data.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate) || b.priority.localeCompare(a.priority));
 
             data.forEach(todo => {
+                // create the list item for each todo
+                console.log(todo.completed);
                 const todoItem = `
                     <li class="list-group-item">
                         <input type="checkbox" class="form-check-input"
-                               ${todo.isCompleted ? 'checked' : ''}
-                               onclick="toggleComplete(${todo.id})">
-                        <span class="todo-title">${todo.title}</span>
+                               ${todo.completed ? 'checked' : ''}
+                               data-id="${todo.id}" onclick="toggleComplete(${todo.id}, this)">
+                        <span class="todo-title ${todo.isCompleted ? 'completed' : ''}">${todo.title}</span>
                         <button class="btn btn-success btn-sm" onclick="editTodo(${todo.id})">Edit</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteTodo(${todo.id})">Delete</button>
                     </li>
                 `;
-                todoList.innerHTML += todoItem;
+                todoList.innerHTML += todoItem; // add to the list
             });
         })
         .catch(error => console.error("Error fetching ToDos:", error));
 }
 
+// Toggle completion status for a todo
+function toggleComplete(id, checkbox) {
+    const completed = checkbox.checked;
+    fetch(`${apiUrl}/${id}/complete`, {
+        method: "PUT",
+        body: JSON.stringify({ isCompleted: completed }), // Send updated status
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(() => {
+        fetchTodos();
+    })
+    .catch(error => {
+        console.error("Error toggling ToDo completion:", error);
+    });
+}
 
-// add todo
+// add a todo
 document.getElementById("addTodoForm").addEventListener("submit", function (e) {
     e.preventDefault();
     const todo = {
@@ -39,12 +56,13 @@ document.getElementById("addTodoForm").addEventListener("submit", function (e) {
         priority: document.getElementById("priority").value,
         isCompleted: false
     };
+
     fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(todo),
     }).then(() => {
-        fetchTodos();
+        fetchTodos(); // Re-fetch and display the updated todo list
         this.reset();
         document.querySelector("#todoTabs a[href='#all-todos']").click();
     });
@@ -55,7 +73,7 @@ function deleteTodo(id) {
     fetch(`${apiUrl}/${id}`, { method: "DELETE" }).then(() => fetchTodos());
 }
 
-// edit todo
+// edit a todo
 function editTodo(id) {
     fetch(`${apiUrl}/${id}`)
         .then(response => response.json())
@@ -70,7 +88,7 @@ function editTodo(id) {
         });
 }
 
-// Save changes after editing
+// save editing
 document.getElementById("saveEditBtn").addEventListener("click", function () {
     const id = document.getElementById("editTodoId").value;
     const updatedTodo = {
@@ -90,30 +108,7 @@ document.getElementById("saveEditBtn").addEventListener("click", function () {
     });
 });
 
-// todo completion
-function toggleComplete(id) {
-    fetch(`${apiUrl}/${id}`)
-        .then(response => response.json())
-        .then(todo => {
-            todo.isCompleted = !todo.isCompleted;
-
-            fetch(`${apiUrl}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(todo),
-            })
-            .then(() => fetchTodos())
-            .catch(error => console.error("Error updating ToDo completion:", error));
-        })
-        .catch(error => console.error("Error fetching ToDo:", error));
-}
-
-
-
-// Initialize
+// Initialize the app when the document is loaded
 document.addEventListener('DOMContentLoaded', (event) => {
-    fetchTodos();
+    fetchTodos(); // fetch todos
 });
-

@@ -113,3 +113,9 @@ h3 {
 #saveEditBtn:hover {
     background-color: #218838;
 }
+
+.completed {
+    text-decoration: line-through;
+    color: gray; /* Optional: change text color when completed */
+}
+
